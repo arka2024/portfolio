@@ -1,0 +1,18 @@
+{
+  "name": "Arkabrata Roy — Software Engineer Portfolio",
+  "short_name": "Arkabrata.dev",
+  "description": "Portfolio of Arkabrata Roy, Software Engineer focused on Backend Systems and Applied AI.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

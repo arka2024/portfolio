@@ -1,0 +1,430 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ARKABRATA ROY — HIGH-PERFORMANCE TECH ARCHITECT CSS SYSTEM
+   Aesthetic: Deep obsidian/navy, neon cyan & electric indigo accents,
+   ultra-clean typography, live telemetry widgets, 60 FPS GPU-only animations.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Animation Timing & Easings (Mandatory Rule 3) */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);    /* buttons, tooltips, modals */
+  --ease-fluid: cubic-bezier(0.25, 1, 0.5, 1);      /* general OS-like smoothness */
+  
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* Theme tokens - Light mode */
+  --color-bg: #f8fafc;
+  --color-fg: #0a0f1d;
+  --color-muted: #64748b;
+  --color-card: rgba(255, 255, 255, 0.75);
+  --color-card-border: rgba(203, 213, 225, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(226, 232, 240, 0.85);
+  --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --badge-bg: rgba(6, 182, 212, 0.08);
+  --badge-border: rgba(6, 182, 212, 0.25);
+  --badge-fg: #0284c7;
+  --grid-color: rgba(6, 182, 212, 0.05);
+}
+
+.dark {
+  /* Theme tokens - Obsidian Navy Default (Matching Reference) */
+  --color-bg: #050811;
+  --color-fg: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-card: rgba(10, 16, 29, 0.65);
+  --color-card-border: rgba(255, 255, 255, 0.09);
+  --glass-bg: rgba(10, 16, 30, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --badge-bg: rgba(6, 182, 212, 0.12);
+  --badge-border: rgba(6, 182, 212, 0.35);
+  --badge-fg: #38bdf8;
+  --grid-color: rgba(6, 182, 212, 0.04);
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-display, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif);
+  overflow-x: hidden;
+  transition: background-color var(--duration-normal) var(--ease-fluid),
+              color var(--duration-normal) var(--ease-fluid);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EFFECT A: SCROLL PROGRESS BAR
+   Fixed at top, uses animation-timeline: scroll(root) with scaleX(0) -> scaleX(1)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  z-index: 100;
+  background: linear-gradient(90deg, #06b6d4 0%, #38bdf8 40%, #6366f1 75%, #8b5cf6 100%);
+  transform-origin: left;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+  will-change: transform;
+}
+
+@supports (animation-timeline: scroll(root)) {
+  .scroll-progress-bar {
+    animation: grow-progress auto linear;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes grow-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@supports not (animation-timeline: scroll(root)) {
+  .scroll-progress-bar {
+    transform: scaleX(var(--scroll-fallback, 0));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EFFECT B: SCROLL-REVEAL FADE-IN
+   animation-timeline: view(), animation-range: entry 10% cover 40%
+   with opacity 0 / translateY(30px) -> opacity 1 / translateY(0)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.reveal-on-scroll {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@supports (animation-timeline: view()) {
+  .reveal-on-scroll {
+    animation: fade-in linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 35%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EFFECT C: FLUID HOVER STAGGERING
+   Uses --item-index with transition-delay: calc(var(--item-index) * 0.05s)
+   On group hover, items move up by translateY(-4px) in a wave
+   ═══════════════════════════════════════════════════════════════════════════ */
+.stagger-group .stagger-item {
+  transition: transform var(--duration-normal) var(--ease-fluid),
+              background-color var(--duration-normal) var(--ease-fluid),
+              border-color var(--duration-normal) var(--ease-fluid),
+              color var(--duration-normal) var(--ease-fluid),
+              box-shadow var(--duration-normal) var(--ease-fluid);
+  transition-delay: calc(var(--item-index, 0) * 0.04s);
+  will-change: transform;
+}
+
+.stagger-group:hover .stagger-item {
+  transform: translateY(-4px);
+}
+
+.stagger-item:hover {
+  transform: translateY(-7px) scale(1.02) !important;
+  transition-delay: 0s !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EFFECT D: HIGH-TECH GLASSMORPHISM & COSMIC LIGHTING
+   Deep navy frosted glass with crisp borders and ambient radiance
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tech-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 35px rgba(0, 0, 0, 0.4);
+  transition: transform var(--duration-normal) var(--ease-pop),
+              border-color var(--duration-normal) var(--ease-fluid),
+              box-shadow var(--duration-normal) var(--ease-fluid);
+}
+
+.tech-card-interactive:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: inset 0 1px 0 rgba(6, 182, 212, 0.25), 0 16px 45px -8px rgba(6, 182, 212, 0.25);
+}
+
+.glass-nav-header {
+  background: rgba(5, 8, 17, 0.85);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+html.light .glass-nav-header {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VIBRANT ACTION BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.btn-cyan-glow {
+  background: linear-gradient(135deg, #00f2fe 0%, #06b6d4 60%, #0284c7 100%);
+  color: #040814;
+  font-weight: 700;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.45);
+  transition: transform var(--duration-fast) var(--ease-pop),
+              box-shadow var(--duration-fast) var(--ease-fluid),
+              opacity var(--duration-fast) var(--ease-fluid);
+  will-change: transform;
+}
+
+.btn-cyan-glow:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 35px rgba(6, 182, 212, 0.7);
+}
+
+.btn-cyan-glow:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.btn-glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  transition: transform var(--duration-fast) var(--ease-pop),
+              border-color var(--duration-fast) var(--ease-fluid),
+              background-color var(--duration-fast) var(--ease-fluid);
+  will-change: transform;
+}
+
+.btn-glass-pill:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(6, 182, 212, 0.5);
+  color: #ffffff;
+}
+
+.btn-glass-pill:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BACKGROUND COSMIC RADIANCE & GRID (Animate Transform & Opacity Only)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.blob-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cyber-grid {
+  background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+}
+
+.blob-1 {
+  position: absolute;
+  top: -8%;
+  left: 15%;
+  width: 650px;
+  height: 650px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.35) 0%, rgba(99, 102, 241, 0.2) 45%, transparent 75%);
+  filter: blur(80px);
+  will-change: transform;
+  animation: blob-float-1 22s var(--ease-fluid) infinite alternate;
+}
+
+.blob-2 {
+  position: absolute;
+  top: 25%;
+  right: -8%;
+  width: 700px;
+  height: 700px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.25) 50%, transparent 75%);
+  filter: blur(85px);
+  will-change: transform;
+  animation: blob-float-2 26s var(--ease-fluid) infinite alternate;
+}
+
+.blob-3 {
+  position: absolute;
+  bottom: 5%;
+  left: -5%;
+  width: 600px;
+  height: 600px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(6, 182, 212, 0.2) 50%, transparent 75%);
+  filter: blur(80px);
+  will-change: transform;
+  animation: blob-float-3 24s var(--ease-fluid) infinite alternate;
+}
+
+.blob-horizon {
+  position: absolute;
+  top: -120px;
+  left: 0;
+  right: 0;
+  height: 320px;
+  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(6, 182, 212, 0.28) 0%, rgba(99, 102, 241, 0.15) 50%, transparent 80%);
+  filter: blur(70px);
+  will-change: transform;
+  animation: horizon-pulse 16s var(--ease-fluid) infinite alternate;
+}
+
+@keyframes blob-float-1 {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(60px, 40px, 0) scale(1.12) rotate(40deg); }
+  100% { transform: translate3d(-50px, 30px, 0) scale(0.92) rotate(-35deg); }
+}
+
+@keyframes blob-float-2 {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(-60px, -50px, 0) scale(1.15) rotate(-45deg); }
+  100% { transform: translate3d(40px, 45px, 0) scale(0.95) rotate(35deg); }
+}
+
+@keyframes blob-float-3 {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(50px, -35px, 0) scale(1.1) rotate(30deg); }
+  100% { transform: translate3d(-40px, -45px, 0) scale(0.92) rotate(-30deg); }
+}
+
+@keyframes horizon-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.08) translateY(15px); opacity: 1; }
+  100% { transform: scale(0.95) translateY(-10px); opacity: 0.75; }
+}
+
+/* Light beam scan */
+.cyber-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(6, 182, 212, 0) 25%, rgba(6, 182, 212, 0.8) 50%, rgba(99, 102, 241, 0.8) 60%, transparent 100%);
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.9);
+  will-change: transform, opacity;
+  animation: beam-scan 10s var(--ease-fluid) infinite;
+}
+
+@keyframes beam-scan {
+  0% { transform: translateY(-20px); opacity: 0; }
+  10% { opacity: 0.85; }
+  90% { opacity: 0.85; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MARQUEE CONTINUOUS STREAMING RIBBON
+   ═══════════════════════════════════════════════════════════════════════════ */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 32s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIVE TELEMETRY WIDGET ANIMATIONS: SPECTRUM & WAVEFORM
+   ═══════════════════════════════════════════════════════════════════════════ */
+.spectrum-bar {
+  transform-origin: bottom;
+  animation: spectrum-dance 1.4s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes spectrum-dance {
+  0% { transform: scaleY(0.25); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(0.45); }
+}
+
+.wave-pulse-dot {
+  animation: wave-pulse 2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes wave-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(2.2); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONTAINER QUERIES FOR PROJECT CARDS (Mandatory Rule 5)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.project-container {
+  container-type: inline-size;
+  container-name: project-card;
+}
+
+@container project-card (min-width: 580px) {
+  .project-title {
+    font-size: 1.35rem;
+  }
+}
+
+@container project-card (max-width: 579px) {
+  .project-title {
+    font-size: 1.15rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION BLOCK (Mandatory Rule 6)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
